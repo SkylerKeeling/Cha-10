@@ -1,8 +1,4 @@
-const express = require("express")
 const mysql = require("mysql2")
-
-const PORT = process.env.PORT || 3001
-const app = express()
 
 const db = mysql.createConnection(
   {
@@ -13,3 +9,11 @@ const db = mysql.createConnection(
   },
   console.log(`Connected to the inventory_db database.`)
 )
+
+db.connect(function (err) {
+  if (err) {
+    throw err
+  }
+})
+
+module.exports = db
