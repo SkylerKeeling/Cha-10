@@ -93,4 +93,87 @@ function addDepartment() {
       startApp()
     })
 }
+
+function addRole() {
+  db.query("select * from department", (err, res) => {
+    inquirer
+      .prompt([
+        {
+          name: "newRole",
+          type: "input",
+          message: "Enter the name of the role?",
+        },
+        {
+          name: "newRoleSalary",
+          type: "input",
+          message: "Enter the salary of the role?",
+        },
+        {
+          name: "department",
+          type: "list",
+          message: "What is the department for the new role?",
+          choices: res.map(department => department.name),
+        },
+      ])
+      .then(function (response) {
+        let dept = res.find(
+          department => department.name === response.department
+        )
+        db.query("insert into role set ?", {
+          title: response.newRole,
+          salary: response.newRoleSalary,
+          department_id: dept.id,
+        })
+        console.log("new role added")
+        startApp()
+      })
+  })
+}
+
+function addEmployee() {
+  db.query("select * from role", (err, res) => {
+    inquirer
+      .prompt([
+        {
+          name: "newEmployeeFirstName",
+          type: "input",
+          message: "Enter the first name of employee?",
+        },
+        {
+          name: "newEmployeeLastName",
+          type: "input",
+          message: "Enter the last name of employee?",
+        },
+        {
+          name: "NewEmployeeRoleID",
+          type: "list",
+          message: "What is the role for the new employee?",
+          choices: res.map(role => role.title),
+        },
+      ])
+      .then(function (response) {
+        let role = res.find(role => role.title === response.NewEmployeeRoleID)
+        db.query(
+          "insert into employee set ?",
+          {
+            first_name: response.newEmployeeFirstName,
+            last_name: response.newEmployeeLastName,
+            role_id: role.id,
+            manager_id: 1,
+          },
+          function (err) {
+            if (err) throw err
+            console.log("employee added")
+            startApp()
+          }
+        )
+      })
+  })
+}
+
+//updateEmploye()
+//prompt employee list
+//query employe list
+//response grab employees id
+//edit response.
 startApp()
