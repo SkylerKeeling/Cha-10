@@ -1,4 +1,4 @@
-use inventory_db;
+use employeeDB;
 
 INSERT INTO department (name)
 VALUES ("Software"), ("Sales"), ("HR"), ("Legal");

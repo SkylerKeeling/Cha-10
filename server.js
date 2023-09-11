@@ -4,10 +4,10 @@ const db = mysql.createConnection(
   {
     host: "localhost",
     user: "root",
-    password: "",
-    database: "inventory_db",
+    password: "password",
+    database: "employeeDB",
   },
-  console.log(`Connected to the inventory_db database.`)
+  console.log(`Connected to the employeeDB database.`)
 )
 
 db.connect(function (err) {

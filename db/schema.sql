@@ -1,7 +1,10 @@
 DROP DATABASE IF EXISTS inventory_db;
 CREATE DATABASE inventory_db;
+DROP DATABASE IF EXISTS employeeDB;
 
-USE inventory_db;
+CREATE DATABASE employeeDB;
+
+use employeeDB;
 
 CREATE TABLE department (
     id INT PRIMARY KEY AUTO_INCREMENT, 
