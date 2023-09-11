@@ -1,5 +1,15 @@
 const inquirer = require("inquirer")
 const db = require("./server")
+const cfonts = require("cfonts")
+
+cfonts.say("MySQL Employee Tracker", {
+  font: "block",
+  align: "left",
+  colors: ["green"],
+  background: "transparent",
+  letterSpacing: 1,
+  lineHeight: 1,
+})
 
 function startApp() {
   inquirer
@@ -172,31 +182,45 @@ function addEmployee() {
 }
 
 function updateEmployee() {
-  db.query("SELECT * FROM employee", (err, res) => {
-    inquirer
-      .prompt([
-        {
-          type: "list",
-          name: "employee",
-          message: "Select the employee to update:",
-          choices: res.map(employee => employee.name),
-        },
-        {
-          type: "list",
-          name: "role",
-          message: "Select the new role:",
-          choices: res.map(role => role.title),
-        },
-      ])
-      .then(answers => {
-        const employee = answers.employee
-        const role = answers.role
-        const query = "UPDATE employee SET role_id = ? WHERE id = ?"
-        connection.query(query, [role.id, employee.id], (err, res) => {
-          if (err) throw err
-          console.log(`Updated ${employee}'s role to ${role} in the database!`)
+  const employee =
+    "SELECT employee.id, employee.first_name, employee.last_name, roles.title FROM employee LEFT JOIN roles ON employee.role_id = roles.id"
+  const role = "SELECT * FROM roles"
+  db.query(employee, (err, resEmployees) => {
+    if (err) throw err
+    db.query(role, (err, resRoles) => {
+      if (err) throw err
+      inquirer
+        .prompt([
+          {
+            type: "list",
+            name: "employee",
+            message: "Select the employee to update:",
+            choices: resEmployees.map(
+              employee => `${employee.first_name} ${employee.last_name}`
+            ),
+          },
+          {
+            type: "list",
+            name: "role",
+            message: "Select the new role:",
+            choices: resRoles.map(role => role.title),
+          },
+        ])
+        .then(answers => {
+          const employee = resEmployees.find(
+            employee =>
+              `${employee.first_name} ${employee.last_name}` ===
+              answers.employee
+          )
+          const role = resRoles.find(role => role.title === answers.role)
+          const query = "UPDATE employee SET role_id = ? WHERE id = ?"
+          connection.query(query, [role.id, employee.id], (err, res) => {
+            if (err) throw err
+
+            startApp()
+          })
         })
-      })
+    })
   })
 }
 
