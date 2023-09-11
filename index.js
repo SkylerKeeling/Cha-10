@@ -41,7 +41,7 @@ function startApp() {
           addEmployee()
           break
         case "Update employee roles":
-          employeeUpdate()
+          updateEmployee()
           break
         case "Exit":
           connection.end()
@@ -171,9 +171,33 @@ function addEmployee() {
   })
 }
 
-//updateEmploye()
-//prompt employee list
-//query employe list
-//response grab employees id
-//edit response.
+function updateEmployee() {
+  db.query("SELECT * FROM employee", (err, res) => {
+    inquirer
+      .prompt([
+        {
+          type: "list",
+          name: "employee",
+          message: "Select the employee to update:",
+          choices: res.map(employee => employee.name),
+        },
+        {
+          type: "list",
+          name: "role",
+          message: "Select the new role:",
+          choices: res.map(role => role.title),
+        },
+      ])
+      .then(answers => {
+        const employee = answers.employee
+        const role = answers.role
+        const query = "UPDATE employee SET role_id = ? WHERE id = ?"
+        connection.query(query, [role.id, employee.id], (err, res) => {
+          if (err) throw err
+          console.log(`Updated ${employee}'s role to ${role} in the database!`)
+        })
+      })
+  })
+}
+
 startApp()
