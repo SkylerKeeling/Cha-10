@@ -14,7 +14,7 @@ It is used to store data.
 
 ## Screenshot
 
-![alt text]()
+![alt text](assets/Screen%20Shot%202023-09-11%20at%204.17.34%20PM.png)
 
 ## Credits
 
